@@ -230,5 +230,74 @@ class BuildLevelsTests(unittest.TestCase):
         self.assertNotEqual(lv.plan_day(midnight - 1), lv.plan_day(midnight))
 
 
+class EventFormattingTests(unittest.TestCase):
+    LEVELS = {"symbol": "ETH"}
+
+    def _event(self, **overrides):
+        event = {
+            "index": 1,
+            "name": "Acceptance and retest (short VAL)",
+            "side": "SHORT",
+            "status": lv.FIRED,
+            "bar_t": T0,
+            "price": 2353.2,
+            "level": 2355.0,
+            "stop": 2368.01,
+            "t1": 2310.3,
+            "t2": 2302.57,
+            "rr1": 3.44,
+            "rr2": 4.03,
+            "tradable": True,
+            "message": "5m close 2,353.20 below entry 2,355.00",
+        }
+        event.update(overrides)
+        return event
+
+    def test_fired_message_carries_the_whole_trade(self):
+        from watch import format_event
+
+        text = format_event(self.LEVELS, self._event())
+        self.assertIn("FIRED | ETH | S2", text)
+        self.assertIn("2,355.00", text)
+        self.assertIn("3.44R / 4.03R", text)
+        self.assertIn("valid - trigger confirmed", text)
+
+    def test_stand_aside_is_called_out(self):
+        from watch import format_event
+
+        text = format_event(self.LEVELS, self._event(tradable=False))
+        self.assertIn("STAND ASIDE", text)
+
+    def test_void_message_says_plan_dead(self):
+        from watch import format_event
+
+        event = self._event(status=lv.VOID, message="5m close 2,300.10 below the invalidation 2,301.62 - plan dead")
+        text = format_event(self.LEVELS, event)
+        self.assertIn("VOID | ETH", text)
+        self.assertIn("plan dead", text)
+        self.assertNotIn("3.44R", text)
+
+
+class NotifyTests(unittest.TestCase):
+    def test_unconfigured_send_is_a_noop(self):
+        import os
+        from unittest.mock import patch
+
+        import notify
+
+        with patch.dict(os.environ, {"TELEGRAM_BOT_TOKEN": "", "TELEGRAM_CHAT_ID": ""}):
+            result = notify.send("hello")
+        self.assertFalse(result["ok"])
+        self.assertIn("not set", result["skipped"])
+
+    def test_split_message_respects_the_limit(self):
+        import notify
+
+        text = "\n\n".join("x" * 900 for _ in range(6))
+        chunks = notify.split_message(text, limit=2000)
+        self.assertGreaterEqual(len(chunks), 3)
+        self.assertTrue(all(len(chunk) <= 2000 for chunk in chunks))
+
+
 if __name__ == "__main__":
     unittest.main()
