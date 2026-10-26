@@ -285,6 +285,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--book-json", action="store_true", help="print the full computed book instead")
     parser.add_argument("--telegram-plan", action="store_true", help="push the compact plan to Telegram")
     parser.add_argument(
+        "--notify-changes",
+        action="store_true",
+        help="push a Telegram alert when the bias or regime label changes between runs",
+    )
+    parser.add_argument(
         "--require-telegram",
         action="store_true",
         help="exit 5 if the Telegram send fails (used by the test_alert workflow input)",
@@ -322,6 +327,15 @@ def main(argv: list[str] | None = None) -> int:
     text = brief_mod.render(book, display_offset_minutes=offset)
     plan = lv.build_levels(book, display_offset_minutes=offset)
 
+    # Read the previous plan before overwriting it, so a bias/regime flip is detectable.
+    previous = None
+    latest_path = OUTPUT_DIR / "latest.json"
+    if latest_path.exists():
+        try:
+            previous = json.loads(latest_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            previous = None
+
     if args.book_json:
         print(json.dumps(book_to_dict(book), indent=2))
     elif args.json:
@@ -341,6 +355,19 @@ def main(argv: list[str] | None = None) -> int:
         print(f"[telegram] {'sent' if result['ok'] else result.get('skipped') or result.get('detail')}")
         if args.require_telegram and not result["ok"]:
             return 5
+
+    if args.notify_changes:
+        changes = lv.describe_changes(previous, plan)
+        if not changes:
+            print("[telegram] no bias/regime change")
+        else:
+            result = notify.send(lv.format_change_message(plan, changes))
+            print(
+                "[telegram] change alert: "
+                f"{'sent' if result['ok'] else result.get('skipped') or result.get('detail')}"
+            )
+            if args.require_telegram and not result["ok"]:
+                return 5
     return 0
 
 

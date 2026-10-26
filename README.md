@@ -96,8 +96,26 @@ What arrives:
 
 - the day's plan at 00:05 UTC (05:30 IST), short enough to read on a lock screen
 - **FIRED** / **VOID** as they happen from the 5-minute watch
+- a **REGIME CHANGE** ping when the hourly bias or regime label flips (not on every
+  level move - that would turn the channel into noise)
 - nothing at all if the secrets are absent: the tools log the skip and carry on, so a
   missing token never breaks the brief
+
+### Live layer
+
+The page polls Hyperliquid directly from your browser - CORS is open on `/info` - and
+repaints a strip above the brief: spot, session VWAP, distance to VAH/POC/VAL in ATR
+units, and a state badge per setup (WAITING / ARMED / FIRED / VOID).
+
+Nothing is proxied and no secret is involved: the browser reads the published
+`levels.json`, fetches 5m candles itself, and runs the same touch-then-confirm rule as
+the watch. That rule set therefore exists twice - Python for the alerts, JavaScript for
+the page - which is exactly the kind of thing that silently drifts, so
+`tests/test_parity.py` feeds identical bar sequences to both and fails on disagreement.
+
+It degrades honestly: if a fetch fails the dot turns red and the strip keeps the last
+values, labelled with when they were captured, rather than passing stale numbers off
+as live.
 
 ### Alert semantics
 
@@ -133,6 +151,8 @@ watch.py      5-minute evaluator (fetch, evaluate, alert, persist state)
 make_site.py  static site builder
 mdmini.py     minimal Markdown -> HTML for this project's own output
 notify.py     Telegram sender (silent no-op when unconfigured)
+web/live.js   browser-side maths + state machine (parity-tested against levels.py)
+web/app.js    live strip: polls Hyperliquid, repaints, degrades honestly
 eth_brief.py  CLI, OI snapshot store, selfcheck
 tests/        unittest suite + recorded payload fixtures
 ```
@@ -165,11 +185,14 @@ The workflow treats 2 and 4 as "wait for the next brief", not as failures.
 python -m unittest discover -s tests -v
 ```
 
-99 tests: coercion, sort/dedupe, missing-field raw dump, hand-computed value area /
+117 tests: coercion, sort/dedupe, missing-field raw dump, hand-computed value area /
 VWAP / pivots / Wilder ATR / EMA, bias thresholds, all four regime branches, R:R maths,
 the trigger state machine (arming, confirmation, invalidation, idempotency, pre-plan
-bars, still-forming bars), the mini renderer, and an end-to-end replay of a recorded
-live payload through to the built site.
+bars, still-forming bars), bias/regime change detection, the mini renderer, and an
+end-to-end replay of a recorded live payload through to the built site.
+
+`test_parity.py` additionally runs the JavaScript state machine under node on the same
+bar sequences as the Python one and fails if the two disagree.
 
 ## Non-goals
 

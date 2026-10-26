@@ -248,3 +248,52 @@ def evaluate_all(
         if event:
             events.append(event)
     return out, events
+
+
+# ------------------------------------------------------------- change alerts
+def _signed(value) -> str:
+    try:
+        return f"{int(value):+d}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def describe_changes(previous: Mapping | None, current: Mapping) -> list[str]:
+    """Human diff between two published plans: bias label and regime label only.
+
+    Deliberately narrow. Value position and every level move intraday, and alerting
+    on those turns the channel into noise; a bias flip or a regime flip is the news.
+    """
+    if not previous:
+        return []
+    changes: list[str] = []
+    prev_bias = previous.get("bias") or {}
+    curr_bias = current.get("bias") or {}
+    if prev_bias.get("label") and curr_bias.get("label") and prev_bias["label"] != curr_bias["label"]:
+        changes.append(
+            f"bias {prev_bias['label']} ({_signed(prev_bias.get('score'))})"
+            f" -> {curr_bias['label']} ({_signed(curr_bias.get('score'))})"
+        )
+    prev_regime = previous.get("regime") or {}
+    curr_regime = current.get("regime") or {}
+    if prev_regime.get("label") and curr_regime.get("label") and prev_regime["label"] != curr_regime["label"]:
+        changes.append(f"regime {prev_regime['label']} -> {curr_regime['label']}")
+    return changes
+
+
+def format_change_message(levels: Mapping, changes: Sequence[str]) -> str:
+    va = levels.get("value_area") or {}
+    atr = levels.get("atr") or {}
+    spot = levels.get("spot")
+    lines = [f"REGIME CHANGE | {levels.get('symbol')}", *changes, ""]
+    bits = []
+    if spot is not None:
+        bits.append(f"spot {spot:,.2f}")
+    if va:
+        bits.append(f"VA {va.get('val', 0):,.0f}-{va.get('vah', 0):,.0f}")
+    if atr.get("value"):
+        bits.append(f"1H ATR {atr['value']:,.2f}")
+    if bits:
+        lines.append(" | ".join(bits))
+    lines.append("levels are unchanged; the setups in the brief still apply")
+    return "\n".join(lines)

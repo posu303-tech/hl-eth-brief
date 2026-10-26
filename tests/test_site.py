@@ -117,6 +117,19 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIn("/hl-eth-brief/", page)
         self.assertIn("Not found", page)
 
+    def test_live_block_is_present(self):
+        self.assertIn('id="live"', self.index)
+        self.assertIn('<script src="live.js" defer></script>', self.index)
+        self.assertIn('<script src="app.js" defer></script>', self.index)
+
+    def test_web_assets_are_copied(self):
+        for name in ("live.js", "app.js"):
+            self.assertTrue((self.site / name).exists(), name)
+
+    def test_archive_pages_do_not_load_the_live_layer(self):
+        page = (self.site / "briefs" / "2026-10-26.html").read_text(encoding="utf-8")
+        self.assertNotIn("app.js", page)
+
     def test_nojekyll_written(self):
         self.assertTrue((self.site / ".nojekyll").exists())
 

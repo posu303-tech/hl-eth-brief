@@ -299,5 +299,45 @@ class NotifyTests(unittest.TestCase):
         self.assertTrue(all(len(chunk) <= 2000 for chunk in chunks))
 
 
+class ChangeAlertTests(unittest.TestCase):
+    PREVIOUS = {
+        "bias": {"label": "Bearish", "score": -4},
+        "regime": {"label": "trend-down"},
+        "spot": 2318.0,
+        "value_area": {"val": 2355.0, "poc": 2400.5, "vah": 2460.0},
+        "atr": {"value": 17.4},
+    }
+
+    def test_first_run_is_silent(self):
+        self.assertEqual(lv.describe_changes(None, self.PREVIOUS), [])
+
+    def test_bias_flip_is_reported(self):
+        current = dict(self.PREVIOUS, bias={"label": "Balanced", "score": -1})
+        changes = lv.describe_changes(self.PREVIOUS, current)
+        self.assertEqual(changes, ["bias Bearish (-4) -> Balanced (-1)"])
+
+    def test_regime_flip_is_reported(self):
+        current = dict(self.PREVIOUS, regime={"label": "rotational-balance"})
+        changes = lv.describe_changes(self.PREVIOUS, current)
+        self.assertEqual(changes, ["regime trend-down -> rotational-balance"])
+
+    def test_both_flips_in_one_alert(self):
+        current = dict(
+            self.PREVIOUS,
+            bias={"label": "Bullish", "score": 3},
+            regime={"label": "trend-up"},
+        )
+        self.assertEqual(len(lv.describe_changes(self.PREVIOUS, current)), 2)
+
+    def test_unchanged_plan_is_silent(self):
+        self.assertEqual(lv.describe_changes(self.PREVIOUS, dict(self.PREVIOUS)), [])
+
+    def test_message_carries_the_levels(self):
+        message = lv.format_change_message(self.PREVIOUS, ["regime trend-down -> trend-up"])
+        self.assertIn("REGIME CHANGE", message)
+        self.assertIn("2,355", message)
+        self.assertIn("1H ATR", message)
+
+
 if __name__ == "__main__":
     unittest.main()

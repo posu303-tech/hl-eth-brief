@@ -53,6 +53,7 @@ jobs:
           python eth_brief.py \
             --symbol "${{ inputs.symbol || 'ETH' }}" \
             --display-offset "${{ inputs.display_offset || '+05:30' }}" \
+            --notify-changes \
             $EXTRA
 
       - name: telegram test
