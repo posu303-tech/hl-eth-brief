@@ -63,9 +63,10 @@ footer { margin-top: 36px; font-size: .78rem; color: #7a7a82; }
 """
 
 
-def _page(title: str, body: str, *, nav: bool = True) -> str:
+def _page(title: str, body: str, *, prefix: str = "", nav: bool = True) -> str:
     links = (
-        '<nav><a href="index.html">Latest</a><a href="archive.html">Archive</a></nav>'
+        f'<nav><a href="{prefix}index.html">Latest</a>'
+        f'<a href="{prefix}archive.html">Archive</a></nav>'
         if nav
         else ""
     )
@@ -112,7 +113,7 @@ def banner(levels: dict) -> str:
     )
 
 
-def build(output_dir: Path, site_dir: Path) -> dict:
+def build(output_dir: Path, site_dir: Path, *, base_path: str = "/hl-eth-brief/") -> dict:
     latest_md = (output_dir / "latest.md").read_text(encoding="utf-8")
     levels = json.loads((output_dir / "latest.json").read_text(encoding="utf-8"))
 
@@ -126,31 +127,58 @@ def build(output_dir: Path, site_dir: Path) -> dict:
     )
 
     archive_files = sorted((output_dir / "archive").glob("*.md"), reverse=True)
-    rows = []
     for path in archive_files:
-        target = f"briefs/{path.stem}.html"
         text = path.read_text(encoding="utf-8")
         (site_dir / "briefs" / f"{path.stem}.html").write_text(
-            _page(f"{levels['symbol']} brief - {path.stem}", mdmini.to_html(text)), encoding="utf-8"
+            _page(f"{levels['symbol']} brief - {path.stem}", mdmini.to_html(text), prefix="../"),
+            encoding="utf-8",
         )
-        rows.append(f'<li><a href="{target}">{path.stem}</a></li>')
-    archive_body = (
-        "<h1>Archive</h1><p>One brief per day, the last run before the UTC close.</p>"
-        f"<ul>{''.join(rows)}</ul>"
-        if rows
-        else "<h1>Archive</h1><p>No archived briefs yet.</p>"
+
+    def entries(prefix: str) -> str:
+        return "".join(
+            f'<li><a href="{prefix}{path.stem}.html">{path.stem}</a></li>' for path in archive_files
+        )
+
+    if archive_files:
+        intro = "<p>One brief per UTC day, the last run before the close.</p>"
+        root_body = f"<h1>Archive</h1>{intro}<ul>{entries('briefs/')}</ul>"
+        briefs_body = f"<h1>Archive</h1>{intro}<ul>{entries('./')}</ul>"
+    else:
+        root_body = briefs_body = "<h1>Archive</h1><p>No archived briefs yet.</p>"
+
+    (site_dir / "archive.html").write_text(_page("Archive", root_body), encoding="utf-8")
+
+    # /briefs/index.html exists so that guessing the folder URL is not a 404.
+    (site_dir / "briefs" / "index.html").write_text(
+        _page("Archive", briefs_body, prefix="../"), encoding="utf-8"
     )
-    (site_dir / "archive.html").write_text(_page("Archive", archive_body), encoding="utf-8")
+
+    (site_dir / "404.html").write_text(
+        _page(
+            "Not found",
+            "<h1>Not found</h1>"
+            "<p>That page does not exist.</p>"
+            f'<p><a href="{base_path}">Latest brief</a> &middot; '
+            f'<a href="{base_path}archive.html">Archive</a></p>',
+            nav=False,
+        ),
+        encoding="utf-8",
+    )
 
     # Pages needs a .nojekyll to serve paths verbatim and skip Jekyll processing.
     (site_dir / ".nojekyll").write_text("", encoding="utf-8")
-    return {"pages": 2 + len(archive_files), "archived": len(archive_files)}
+    return {"pages": 3 + len(archive_files), "archived": len(archive_files)}
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build the static brief site.")
     parser.add_argument("--output", default=str(ROOT / "output"))
     parser.add_argument("--site", default=str(ROOT / "site"))
+    parser.add_argument(
+        "--base-path",
+        default="/hl-eth-brief/",
+        help="public URL prefix, used only by the 404 page links",
+    )
     args = parser.parse_args(argv)
 
     output_dir = Path(args.output)
@@ -158,7 +186,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"missing {output_dir / 'latest.md'}; run eth_brief.py first", file=sys.stderr)
         return 2
 
-    stats = build(output_dir, Path(args.site))
+    stats = build(output_dir, Path(args.site), base_path=args.base_path)
     print(f"site built: {stats['pages']} pages, {stats['archived']} archived")
     return 0
 

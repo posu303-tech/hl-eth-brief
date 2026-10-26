@@ -105,8 +105,17 @@ class SiteBuildTests(unittest.TestCase):
 
     def test_archive_page_links_the_day(self):
         archive = (self.site / "archive.html").read_text(encoding="utf-8")
-        self.assertIn("briefs/", archive)
-        self.assertTrue(list((self.site / "briefs").glob("*.html")))
+        self.assertIn("briefs/2026-10-26.html", archive)
+
+    def test_briefs_folder_has_an_index(self):
+        listing = (self.site / "briefs" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('href="./2026-10-26.html"', listing)
+        self.assertIn('href="../index.html"', listing)
+
+    def test_404_page_links_back_to_the_site(self):
+        page = (self.site / "404.html").read_text(encoding="utf-8")
+        self.assertIn("/hl-eth-brief/", page)
+        self.assertIn("Not found", page)
 
     def test_nojekyll_written(self):
         self.assertTrue((self.site / ".nojekyll").exists())
