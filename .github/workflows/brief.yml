@@ -1,0 +1,79 @@
+name: hourly brief
+
+on:
+  schedule:
+    - cron: "5 * * * *"        # hourly, five past the hour (funding tick + 1H close)
+  workflow_dispatch:
+    inputs:
+      symbol:
+        description: "perp coin"
+        default: "ETH"
+      display_offset:
+        description: "local UTC offset for timestamps (sessions stay UTC)"
+        default: "+05:30"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: brief
+  cancel-in-progress: false
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: unit tests
+        run: python -m unittest discover -s tests
+
+      - name: build brief
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          EXTRA=""
+          if [ "${{ github.event.schedule }}" = "5 0 * * *" ]; then
+            EXTRA="--telegram-plan"   # push the new day's levels at 00:05 UTC
+          fi
+          python eth_brief.py \
+            --symbol "${{ inputs.symbol || 'ETH' }}" \
+            --display-offset "${{ inputs.display_offset || '+05:30' }}" \
+            $EXTRA
+
+      - name: build site
+        run: python make_site.py
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: commit the plan and the OI history
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output data
+          if git diff --cached --quiet; then
+            echo "nothing changed"
+            exit 0
+          fi
+          git commit -m "brief: $(date -u +%Y-%m-%dT%H:%MZ)"
+          for attempt in 1 2 3; do
+            if git pull --rebase --autostash && git push; then exit 0; fi
+            sleep 5
+          done
+          echo "could not push after 3 attempts" >&2
+          exit 1

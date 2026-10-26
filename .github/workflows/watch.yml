@@ -1,0 +1,55 @@
+name: trigger watch
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"      # best effort: Actions usually lands this 1-10 min late
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: evaluate triggers against the published plan
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set +e
+          python watch.py
+          code=$?
+          # 2 = no plan yet, 4 = plan older than the staleness limit: not failures
+          if [ "$code" -eq 2 ] || [ "$code" -eq 4 ]; then
+            echo "no usable plan (exit $code) - waiting for the hourly brief"
+            exit 0
+          fi
+          exit "$code"
+
+      - name: persist state only when a setup changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -f data/watch_state.json ]; then git add data/watch_state.json; fi
+          if git diff --cached --quiet; then
+            echo "no state change"
+            exit 0
+          fi
+          git commit -m "watch: state $(date -u +%Y-%m-%dT%H:%MZ)"
+          for attempt in 1 2 3; do
+            if git pull --rebase --autostash && git push; then exit 0; fi
+            sleep 5
+          done
+          echo "could not push after 3 attempts" >&2
+          exit 1
