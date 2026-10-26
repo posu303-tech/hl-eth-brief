@@ -2,14 +2,14 @@
   "symbol": "ETH",
   "plan_id": "ETH:2026-10-26",
   "day": "2026-10-26",
-  "as_of": 1793009683116,
+  "as_of": 1793009793352,
   "display_offset_minutes": 330,
-  "spot": 2331.05,
-  "mark": 2331.0,
-  "oracle": 2332.15,
-  "funding_hourly": 5.431e-06,
-  "funding_apr": 0.04757556,
-  "open_interest": 1107580.3934000009,
+  "spot": 2330.25,
+  "mark": 2330.4,
+  "oracle": 2331.5,
+  "funding_hourly": 5.3204e-06,
+  "funding_apr": 0.046606704,
+  "open_interest": 1107493.1732000003,
   "oi_24h_pct": null,
   "value_area": {
     "val": 2355.0,
@@ -24,11 +24,11 @@
     "val": 2309.0,
     "poc": 2331.5,
     "vah": 2335.0,
-    "session_progress": 0.4269
+    "session_progress": 0.4282
   },
   "vwap": {
-    "value": 2317.2279,
-    "sigma": 10.7566
+    "value": 2317.2374,
+    "sigma": 10.7586
   },
   "prior_day": {
     "high": 2370.5,
@@ -49,7 +49,7 @@
   },
   "atr": {
     "value": 17.7323,
-    "pct": 0.7607,
+    "pct": 0.761,
     "median_30": 14.386,
     "ratio": 1.2326
   },
@@ -118,7 +118,7 @@
       "rr1": 2.4657,
       "rr2": 3.1925,
       "stand_aside": false,
-      "trigger": "session VWAP 2,317.23 or pivot resistance near 2,336.53; sell the rejection, not the touch",
+      "trigger": "session VWAP 2,317.24 or pivot resistance near 2,336.53; sell the rejection, not the touch",
       "invalidation": "5m close above 2,347.17: the confluence level is lost"
     }
   ],
