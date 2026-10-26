@@ -2,14 +2,14 @@
   "symbol": "ETH",
   "plan_id": "ETH:2026-10-26",
   "day": "2026-10-26",
-  "as_of": 1793016897551,
+  "as_of": 1793018389584,
   "display_offset_minutes": 330,
-  "spot": 2331.35,
-  "mark": 2331.4,
-  "oracle": 2332.4,
+  "spot": 2324.55,
+  "mark": 2325.3,
+  "oracle": 2326.23,
   "funding_hourly": 1.25e-05,
   "funding_apr": 0.10950000000000001,
-  "open_interest": 1105990.5146000003,
+  "open_interest": 1101840.6236000007,
   "oi_24h_pct": null,
   "value_area": {
     "val": 2355.0,
@@ -21,14 +21,14 @@
     "sessions": 10
   },
   "developing_value_area": {
-    "val": 2310.0,
+    "val": 2311.0,
     "poc": 2329.5,
     "vah": 2335.0,
-    "session_progress": 0.5104
+    "session_progress": 0.5277
   },
   "vwap": {
-    "value": 2318.135,
-    "sigma": 10.8596
+    "value": 2318.6831,
+    "sigma": 10.8746
   },
   "prior_day": {
     "high": 2370.5,
@@ -49,7 +49,7 @@
   },
   "atr": {
     "value": 16.7982,
-    "pct": 0.7205,
+    "pct": 0.7226,
     "median_30": 14.495,
     "ratio": 1.1589
   },
@@ -80,7 +80,7 @@
       "rr1": 0.8569,
       "rr2": 1.9774,
       "stand_aside": true,
-      "trigger": "price is 1.4 ATR below VAL 2,355.00; arm only on a 5m close back above it, which is what confirms the failure",
+      "trigger": "price is 1.8 ATR below VAL 2,355.00; arm only on a 5m close back above it, which is what confirms the failure",
       "invalidation": "5m close below 2,301.90: the sweep was acceptance"
     },
     {
@@ -99,7 +99,7 @@
       "rr1": 3.548,
       "rr2": 4.1618,
       "stand_aside": false,
-      "trigger": "price has been accepted 1.4 ATR below VAL 2,355.00; short the retest that fails at it",
+      "trigger": "price has been accepted 1.8 ATR below VAL 2,355.00; short the retest that fails at it",
       "invalidation": "1H close back inside value (above 2,355.00) voids the acceptance"
     },
     {
@@ -118,7 +118,7 @@
       "rr1": 2.6028,
       "rr2": 3.3333,
       "stand_aside": false,
-      "trigger": "session VWAP 2,318.13 or pivot resistance near 2,336.53; sell the rejection, not the touch",
+      "trigger": "session VWAP 2,318.68 or pivot resistance near 2,336.53; sell the rejection, not the touch",
       "invalidation": "5m close above 2,346.61: the confluence level is lost"
     }
   ],
