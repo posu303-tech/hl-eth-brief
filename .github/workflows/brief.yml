@@ -2,7 +2,7 @@ name: hourly brief
 
 on:
   schedule:
-    - cron: "5 * * * *"        # hourly, five past the hour (funding tick + 1H close)
+    - cron: "4 * * * *"        # hourly, :04 (funding tick + 1H close)
   workflow_dispatch:
     inputs:
       symbol:
@@ -47,8 +47,8 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           EXTRA=""
-          if [ "${{ github.event.schedule }}" = "5 0 * * *" ]; then
-            EXTRA="--telegram-plan"   # push the new day's levels at 00:05 UTC
+          if [ "${{ github.event.schedule }}" = "4 0 * * *" ]; then
+            EXTRA="--telegram-plan"   # push the new day's levels at 00:04 UTC
           fi
           python eth_brief.py \
             --symbol "${{ inputs.symbol || 'ETH' }}" \
