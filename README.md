@@ -64,6 +64,41 @@ One-time setup:
 Then `https://<user>.github.io/<repo>/` is the brief, `/archive.html` is the history,
 `/levels.json` is the machine-readable plan.
 
+### Telegram alerts (about five minutes)
+
+1. In Telegram message **@BotFather** -> `/newbot` -> choose a name and a username.
+   It replies with a token like `8123456:AAH...`.
+2. Open your new bot and send it any message. A chat id does not exist until you do.
+3. Locally, discover the chat id and confirm delivery in one step:
+
+   ```powershell
+   $env:TELEGRAM_BOT_TOKEN="8123456:AAH..."
+   python telegram_setup.py --send      # prints TELEGRAM_CHAT_ID=... and sends a test
+   ```
+
+4. Store both as repo secrets. `gh secret set` prompts, so the token never lands in
+   your shell history:
+
+   ```powershell
+   gh secret set TELEGRAM_BOT_TOKEN -R posu303-tech/hl-eth-brief
+   gh secret set TELEGRAM_CHAT_ID   -R posu303-tech/hl-eth-brief
+   ```
+
+5. Prove the full chain (secret -> env -> Telegram) by running the workflow with the
+   test input:
+
+   ```powershell
+   gh workflow run brief.yml -R posu303-tech/hl-eth-brief -f test_alert=true
+   gh run watch -R posu303-tech/hl-eth-brief
+   ```
+
+What arrives:
+
+- the day's plan at 00:05 UTC (05:30 IST), short enough to read on a lock screen
+- **FIRED** / **VOID** as they happen from the 5-minute watch
+- nothing at all if the secrets are absent: the tools log the skip and carry on, so a
+  missing token never breaks the brief
+
 ### Alert semantics
 
 - **FIRED** - a 5m close crossed a setup entry *after* the level was actually reached

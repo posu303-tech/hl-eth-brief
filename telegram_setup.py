@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import sys
@@ -25,7 +26,11 @@ def get(url: str, timeout: float = 10.0) -> dict:
         return {"ok": False, "description": str(exc)}
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Find your Telegram chat id, optionally send a test.")
+    parser.add_argument("--send", action="store_true", help="send a test message to each chat found")
+    args = parser.parse_args(argv)
+
     token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
     if not token:
         print("set TELEGRAM_BOT_TOKEN first", file=sys.stderr)
@@ -57,6 +62,19 @@ def main() -> int:
     print("")
     for chat_id, name in chats.items():
         print(f"TELEGRAM_CHAT_ID={chat_id}   ({name})")
+
+    if args.send:
+        import notify
+
+        print("")
+        for chat_id in chats:
+            result = notify.send(
+                "HL-ETH-Brief: test alert. Telegram is working.",
+                token=token,
+                chat_id=str(chat_id),
+            )
+            detail = result.get("detail") or result.get("skipped") or "ok"
+            print(f"test message to {chat_id}: {'sent' if result['ok'] else detail}")
     return 0
 
 
