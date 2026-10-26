@@ -60,14 +60,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          python - <<'PY'
-          import sys
-          import notify
-          result = notify.send("HL-ETH-Brief: test alert. Telegram is wired correctly.")
-          print(result)
-          sys.exit(0 if result.get("ok") else 1)
-          PY
+        run: python eth_brief.py --no-save --telegram-plan --require-telegram
 
       - name: build site
         run: python make_site.py

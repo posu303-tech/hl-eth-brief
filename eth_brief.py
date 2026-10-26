@@ -284,6 +284,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--json", action="store_true", help="print the published plan JSON (levels.json)")
     parser.add_argument("--book-json", action="store_true", help="print the full computed book instead")
     parser.add_argument("--telegram-plan", action="store_true", help="push the compact plan to Telegram")
+    parser.add_argument(
+        "--require-telegram",
+        action="store_true",
+        help="exit 5 if the Telegram send fails (used by the test_alert workflow input)",
+    )
     parser.add_argument("--no-save", action="store_true", help="do not write output files or OI history")
     parser.add_argument("--selfcheck", action="store_true", help="fetch, validate every field, exit")
     return parser
@@ -334,6 +339,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.telegram_plan:
         result = notify.send(brief_mod.render_plan_message(book, display_offset_minutes=offset))
         print(f"[telegram] {'sent' if result['ok'] else result.get('skipped') or result.get('detail')}")
+        if args.require_telegram and not result["ok"]:
+            return 5
     return 0
 
 
