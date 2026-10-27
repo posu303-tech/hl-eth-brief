@@ -117,6 +117,25 @@ It degrades honestly: if a fetch fails the dot turns red and the strip keeps the
 values, labelled with when they were captured, rather than passing stale numbers off
 as live.
 
+### Scheduler reality (measured, not assumed)
+
+GitHub's cron is documented as best effort; on a young repo it was far worse. In the
+first 16 hours the 5-minute watch ran **3 times instead of ~190**, and the hourly brief
+**twice instead of ~16**. Runs landed 3-4 hours apart and not on the cron boundary, and
+for the first ~6 hours `event=schedule` was **0** even though manual dispatch worked.
+
+Shipped mitigation: `scripts/dispatch.ps1`, an idempotent nudger that dispatches the
+watch only when nothing is already queued, and the brief only when the published plan is
+more than 60 minutes old. Register it every five minutes:
+
+```powershell
+schtasks /Create /TN "HL-ETH-Brief dispatcher" /SC MINUTE /MO 5 /F /TR "powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\hp\Toolbox\HL-ETH-Brief\scripts\dispatch.ps1"
+```
+
+Remove with `schtasks /Delete /TN "HL-ETH-Brief dispatcher" /F`. It only runs while the
+machine is awake, so it is a stopgap. The durable answer is an external cron (a
+Cloudflare Worker has 1-minute granularity and does not depend on GitHub's scheduler).
+
 ### Alert semantics
 
 - **FIRED** - a 5m close crossed a setup entry *after* the level was actually reached
