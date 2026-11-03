@@ -5,23 +5,23 @@
       "armed_at": 1793640300000,
       "detail": "5m close 2,256.50 above entry 2,250.00",
       "event_at": 1793640300000,
-      "last_bar_t": 1793640300000,
+      "last_bar_t": 1793672100000,
       "status": "FIRED"
     },
     "1": {
       "armed_at": null,
       "detail": "5m close 2,295.80 below the invalidation 2,367.99 - plan dead",
       "event_at": 1793598000000,
-      "last_bar_t": 1793650200000,
+      "last_bar_t": 1793672100000,
       "status": "VOID"
     },
     "2": {
       "armed_at": 1793634900000,
       "detail": "5m close 2,272.50 above entry 2,266.47",
       "event_at": 1793634900000,
-      "last_bar_t": 1793634900000,
+      "last_bar_t": 1793672100000,
       "status": "FIRED"
     }
   },
-  "updated_at": 1793650525904
+  "updated_at": 1793672521994
 }
