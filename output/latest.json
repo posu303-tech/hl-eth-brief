@@ -2,15 +2,15 @@
   "symbol": "ETH",
   "plan_id": "ETH:2026-11-04",
   "day": "2026-11-04",
-  "as_of": 1793782588455,
+  "as_of": 1793811724855,
   "display_offset_minutes": 330,
-  "spot": 2323.95,
-  "mark": 2324.0,
-  "oracle": 2323.82,
+  "spot": 2431.05,
+  "mark": 2430.82,
+  "oracle": 2431.82,
   "funding_hourly": 1.25e-05,
   "funding_apr": 0.10950000000000001,
-  "open_interest": 1029339.1830000002,
-  "oi_24h_pct": 7.025184475338686,
+  "open_interest": 1044406.4502000001,
+  "oi_24h_pct": 4.748306088233845,
   "value_area": {
     "val": 2221.0,
     "poc": 2251.5,
@@ -21,14 +21,14 @@
     "sessions": 10
   },
   "developing_value_area": {
-    "val": 2227.0,
-    "poc": 2263.5,
-    "vah": 2294.0,
-    "session_progress": 0.3726
+    "val": 2294.0,
+    "poc": 2436.5,
+    "vah": 2447.0,
+    "session_progress": 0.7098
   },
   "vwap": {
-    "value": 2276.9366,
-    "sigma": 25.0111
+    "value": 2343.6383,
+    "sigma": 68.9061
   },
   "prior_day": {
     "high": 2309.4,
@@ -48,78 +48,78 @@
     "s3": 2171.1333
   },
   "atr": {
-    "value": 18.3382,
-    "pct": 0.7891,
-    "median_30": 14.3396,
-    "ratio": 1.2788
+    "value": 24.4063,
+    "pct": 1.0039,
+    "median_30": 15.751,
+    "ratio": 1.5495
   },
   "bias": {
-    "label": "Balanced",
-    "score": 0,
+    "label": "Bullish",
+    "score": 3,
     "max_score": 6
   },
   "regime": {
     "label": "rotational-balance",
-    "value_label": "inside",
-    "pct_closes_outside": 0.0
+    "value_label": "above",
+    "pct_closes_outside": 0.2
   },
   "setups": [
     {
       "index": 0,
-      "name": "Value rejection (short from VAH)",
+      "name": "Failed auction (short back into value)",
       "side": "SHORT",
       "entry": 2328.0,
-      "stop": 2337.1691,
+      "stop": 2443.2531,
       "t1": 2251.5,
       "t2": 2221.0,
       "arm_level": 2328.0,
       "arm_direction": -1,
-      "invalid_level": 2337.1691,
-      "touch_band": 6.4184,
-      "risk": 9.1691,
-      "rr1": 8.3433,
-      "rr2": 11.6697,
-      "stand_aside": false,
-      "trigger": "5m close back inside value after tagging VAH 2,328.00; enter on the loss of the edge",
-      "invalidation": "5m close above 2,337.17: acceptance higher, stand down"
+      "invalid_level": 2443.2531,
+      "touch_band": 8.5422,
+      "risk": 115.2531,
+      "rr1": 0.6638,
+      "rr2": 0.9284,
+      "stand_aside": true,
+      "trigger": "price is 4.2 ATR above VAH 2,328.00; arm only on a 5m close back below it, which is what confirms the failure",
+      "invalidation": "5m close above 2,443.25: the sweep was acceptance"
     },
     {
       "index": 1,
-      "name": "Range expansion (long above VAH)",
+      "name": "Acceptance and retest (long VAH)",
       "side": "LONG",
-      "entry": 2329.8338,
-      "stop": 2318.8309,
+      "entry": 2328.0,
+      "stop": 2309.6953,
       "t1": 2343.7667,
       "t2": 2378.1333,
-      "arm_level": 2329.8338,
+      "arm_level": 2328.0,
       "arm_direction": 1,
-      "invalid_level": 2318.8309,
-      "touch_band": 6.4184,
-      "risk": 11.0029,
-      "rr1": 1.2663,
-      "rr2": 4.3897,
+      "invalid_level": 2309.6953,
+      "touch_band": 8.5422,
+      "risk": 18.3047,
+      "rr1": 0.8613,
+      "rr2": 2.7388,
       "stand_aside": true,
-      "trigger": "1H close above VAH 2,328.00 while still inside value; buy the confirmation, not the poke",
-      "invalidation": "1H close back below 2,328.00: the expansion failed, mirror the short at VAL"
+      "trigger": "price has been accepted 4.2 ATR above VAH 2,328.00; long the retest that holds above it",
+      "invalidation": "1H close back inside value (below 2,328.00) voids the acceptance"
     },
     {
       "index": 2,
       "name": "VWAP / pivot confluence (long)",
       "side": "LONG",
-      "entry": 2276.9366,
-      "stop": 2265.9338,
-      "t1": 2301.9478,
-      "t2": 2309.4,
-      "arm_level": 2276.9366,
+      "entry": 2343.6383,
+      "stop": 2328.9945,
+      "t1": 2392.4508,
+      "t2": 2412.5444,
+      "arm_level": 2343.6383,
       "arm_direction": 1,
-      "invalid_level": 2265.9338,
-      "touch_band": 6.4184,
-      "risk": 11.0029,
-      "rr1": 2.2731,
-      "rr2": 2.9504,
+      "invalid_level": 2328.9945,
+      "touch_band": 8.5422,
+      "risk": 14.6438,
+      "rr1": 3.3333,
+      "rr2": 4.7055,
       "stand_aside": false,
-      "trigger": "session VWAP 2,276.94 or pivot support near 2,276.94; buy the hold, not the touch",
-      "invalidation": "5m close below 2,265.93: the confluence level is lost"
+      "trigger": "session VWAP 2,343.64 or pivot support near 2,343.64; buy the hold, not the touch",
+      "invalidation": "5m close below 2,328.99: the confluence level is lost"
     }
   ],
   "warnings": []
