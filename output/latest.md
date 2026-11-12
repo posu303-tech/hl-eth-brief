@@ -1,53 +1,53 @@
-# ETH perp (Hyperliquid) - 2026-11-12 00:03 UTC+05:30 (18:33 UTC)
-spot 2,089.25 | mark 2,089.30 | oracle 2,090.18 | OI 769,293.89 ETH (-0.591% vs last run, -2.71% 24h)
-funding +0.00125%/hr (~+10.95%/yr, 100th pct of last 500h) | 24h notional $729.6m
+# ETH perp (Hyperliquid) - 2026-11-12 06:56 UTC+05:30 (01:26 UTC)
+spot 2,049.55 | mark 2,049.55 | oracle 2,050.49 | OI 768,409.38 ETH (-0.115% vs last run, +0.87% 24h)
+funding +0.00098%/hr (~+8.60%/yr, 41th pct of last 500h) | 24h notional $715.8m
 
-## 1) HTF bias - BALANCED (+0 of +-6)
+## 1) HTF bias - BALANCED (-2 of +-6)
 
 | component | read | score |
 |---|---|---|
-| EMA stack | mixed (2,085.67 / 2,182.47) | 0 |
+| EMA stack | price < EMA50 < EMA200 (2,081.45 / 2,174.79) | -1 |
 | 10-session value | price inside the value area | 0 |
-| Prior day close | closed at 37% of prior range | 0 |
-| 20-bar structure | 1H swings higher | +1 |
-| Funding percentile | 100th pct of trailing history (crowded longs = headwind) | -1 |
-| OI 24h | OI -2.7%, price +2.8%: no edge | 0 |
+| Prior day close | closed at 30% of prior range | -1 |
+| 20-bar structure | 1H swings mixed | 0 |
+| Funding percentile | 41th pct of trailing history (crowded longs = headwind) | 0 |
+| OI 24h | OI +0.9%, price -0.3%: no edge | 0 |
 
 ## 2) Intraday regime - rotational-balance, price INSIDE value
 
-- value area (10 UTC sessions, 70%): VAL 2,004.00 | POC 2,124.50 | VAH 2,282.00 (width 278.00 = 13.31% of spot, 240 bars)
-- developing session (77% elapsed): VAL 2,046.00 | POC 2,054.50 | VAH 2,078.00
-- session VWAP 2,067.98 (+1s 2,082.51 / -1s 2,053.44) | prior session VWAP 2,060.93
-- prior day: PDH 2,135.80 | PDL 2,003.70 | PDC 2,052.50 (PDH intact, PDL intact)
-- floor pivots: S3 1,860.10 | S2 1,931.90 | S1 1,992.20 | P 2,064.00 | R1 2,124.30 | R2 2,196.10 | R3 2,256.40
-- 1H ATR(14) 18.75 = 0.90% of spot | ATR vs 30d median x0.92
-- distance to POC -1.88 ATR | VAH -10.28 ATR | VAL +4.55 ATR | closes outside value (last 20): 0%
-- cross-venue funding: BinPerp +0.00081%/hr, BybitPerp +0.00125%/hr, HlPerp +0.00125%/hr
+- value area (10 UTC sessions, 70%): VAL 2,004.00 | POC 2,124.50 | VAH 2,279.00 (width 275.00 = 13.42% of spot, 240 bars)
+- developing session (6% elapsed): VAL 2,055.00 | POC 2,061.50 | VAH 2,065.00
+- session VWAP 2,058.24 (+1s 2,062.46 / -1s 2,054.02) | prior session VWAP 2,066.33
+- prior day: PDH 2,103.00 | PDL 2,034.70 | PDC 2,055.50 (PDH intact, PDL intact)
+- floor pivots: S3 1,957.50 | S2 1,996.10 | S1 2,025.80 | P 2,064.40 | R1 2,094.10 | R2 2,132.70 | R3 2,162.40
+- 1H ATR(14) 17.96 = 0.88% of spot | ATR vs 30d median x0.96
+- distance to POC -4.17 ATR | VAH -12.77 ATR | VAL +2.54 ATR | closes outside value (last 20): 0%
+- cross-venue funding: BinPerp +0.00084%/hr, BybitPerp +0.00072%/hr, HlPerp +0.00098%/hr
 
 ## 3) Setups (conditional - trigger first, then act)
 
 **S1 - Value rejection (long from VAL)** [LONG]
 - trigger: 5m close back inside value after tagging VAL 2,004.00; enter on the reclaim
-- entry 2,004.00 | stop 1,994.63 | T1 2,124.50 | T2 2,282.00
-- R:R 12.85 at T1, 29.66 at T2 | risk 9.37
-- invalid: 5m close below 1,994.63: value rejected lower, stand down
-- verdict: valid only if the trigger prints (T1 12.85R)
+- entry 2,004.00 | stop 1,995.02 | T1 2,124.50 | T2 2,279.00
+- R:R 13.42 at T1, 30.62 at T2 | risk 8.98
+- invalid: 5m close below 1,995.02: value rejected lower, stand down
+- verdict: valid only if the trigger prints (T1 13.42R)
 
 **S2 - Range expansion (long above VAH)** [LONG]
-- trigger: 1H close above VAH 2,282.00 while still inside value; buy the confirmation, not the poke
-- entry 2,283.87 | stop 2,272.63 | T1 2,561.87 | T2 2,317.62
-- R:R 24.71 at T1, 3.00 at T2 | risk 11.25
-- invalid: 1H close back below 2,282.00: the expansion failed, mirror the short at VAL
-- verdict: valid only if the trigger prints (T1 24.71R)
+- trigger: 1H close above VAH 2,279.00 while still inside value; buy the confirmation, not the poke
+- entry 2,280.80 | stop 2,270.02 | T1 2,555.80 | T2 2,313.13
+- R:R 25.51 at T1, 3.00 at T2 | risk 10.78
+- invalid: 1H close back below 2,279.00: the expansion failed, mirror the short at VAL
+- verdict: valid only if the trigger prints (T1 25.51R)
 
 **S3 - VWAP / pivot confluence (long)** [LONG]
-- trigger: session VWAP 2,067.98 or pivot support near 2,067.98; buy the hold, not the touch
-- entry 2,067.98 | stop 2,056.73 | T1 2,082.51 | T2 2,105.47
-- R:R 1.29 at T1, 3.33 at T2 | risk 11.25
-- invalid: 5m close below 2,056.73: the confluence level is lost
-- verdict: STAND ASIDE - T1 pays 1.29R, below the 1.5R floor
+- trigger: session VWAP 2,058.24 or pivot support near 2,025.80; buy the hold, not the touch
+- entry 2,025.80 | stop 2,015.02 | T1 2,061.73 | T2 2,094.10
+- R:R 3.33 at T1, 6.34 at T2 | risk 10.78
+- invalid: 5m close below 2,015.02: the confluence level is lost
+- verdict: valid only if the trigger prints (T1 3.33R)
 
 ## 4) Risk note
-Stops sit 0.50-0.60x the 1H ATR (~$9.37-$11.25); funding runs +0.0300%/day ($+0.12/hr per $10k notional), so size so one ATR of adverse excursion is survivable and treat VAH/VAL pokes as noise until a 1H close confirms.
+Stops sit 0.50-0.60x the 1H ATR (~$8.98-$10.78); funding runs +0.0236%/day ($+0.10/hr per $10k notional), so size so one ATR of adverse excursion is survivable and treat VAH/VAL pokes as noise until a 1H close confirms.
 
 _Levels are conditional triggers derived from observed candles; no price forecast is implied._
