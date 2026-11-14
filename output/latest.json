@@ -2,15 +2,15 @@
   "symbol": "ETH",
   "plan_id": "ETH:2026-11-14",
   "day": "2026-11-14",
-  "as_of": 1794625231645,
+  "as_of": 1794650747343,
   "display_offset_minutes": 330,
-  "spot": 1910.65,
-  "mark": 1911.0,
-  "oracle": 1912.21,
-  "funding_hourly": -1.02399e-05,
-  "funding_apr": -0.08970152399999999,
-  "open_interest": 717995.1822000005,
-  "oi_24h_pct": -2.023929958183135,
+  "spot": 1910.05,
+  "mark": 1910.2,
+  "oracle": 1911.26,
+  "funding_hourly": -6.833e-06,
+  "funding_apr": -0.05985707999999999,
+  "open_interest": 699469.6630000002,
+  "oi_24h_pct": -5.547572523156019,
   "value_area": {
     "val": 1895.0,
     "poc": 2124.25,
@@ -21,14 +21,14 @@
     "sessions": 10
   },
   "developing_value_area": {
-    "val": 1896.0,
-    "poc": 1929.75,
-    "vah": 1936.0,
-    "session_progress": 0.1254
+    "val": 1883.5,
+    "poc": 1903.25,
+    "vah": 1907.5,
+    "session_progress": 0.4207
   },
   "vwap": {
-    "value": 1905.7382,
-    "sigma": 15.2205
+    "value": 1900.4909,
+    "sigma": 12.4639
   },
   "prior_day": {
     "high": 2020.4,
@@ -48,10 +48,10 @@
     "s3": 1750.1
   },
   "atr": {
-    "value": 21.1052,
-    "pct": 1.1046,
-    "median_30": 21.0811,
-    "ratio": 1.0011
+    "value": 20.4826,
+    "pct": 1.0724,
+    "median_30": 21.1855,
+    "ratio": 0.9668
   },
   "bias": {
     "label": "Balanced",
@@ -61,7 +61,7 @@
   "regime": {
     "label": "rotational-balance",
     "value_label": "inside",
-    "pct_closes_outside": 0.0
+    "pct_closes_outside": 0.1
   },
   "setups": [
     {
@@ -69,34 +69,34 @@
       "name": "Value rejection (long from VAL)",
       "side": "LONG",
       "entry": 1895.0,
-      "stop": 1884.4474,
+      "stop": 1884.7587,
       "t1": 2124.25,
       "t2": 2235.5,
       "arm_level": 1895.0,
       "arm_direction": 1,
-      "invalid_level": 1884.4474,
-      "touch_band": 7.3868,
-      "risk": 10.5526,
-      "rr1": 21.7245,
-      "rr2": 32.2669,
+      "invalid_level": 1884.7587,
+      "touch_band": 7.1689,
+      "risk": 10.2413,
+      "rr1": 22.3848,
+      "rr2": 33.2477,
       "stand_aside": false,
       "trigger": "5m close back inside value after tagging VAL 1,895.00; enter on the reclaim",
-      "invalidation": "5m close below 1,884.45: value rejected lower, stand down"
+      "invalidation": "5m close below 1,884.76: value rejected lower, stand down"
     },
     {
       "index": 1,
       "name": "Range expansion (long above VAH)",
       "side": "LONG",
-      "entry": 2237.6105,
-      "stop": 2224.9474,
-      "t1": 2578.1105,
-      "t2": 2275.6,
-      "arm_level": 2237.6105,
+      "entry": 2237.5483,
+      "stop": 2225.2587,
+      "t1": 2578.0483,
+      "t2": 2274.417,
+      "arm_level": 2237.5483,
       "arm_direction": 1,
-      "invalid_level": 2224.9474,
-      "touch_band": 7.3868,
-      "risk": 12.6631,
-      "rr1": 26.889,
+      "invalid_level": 2225.2587,
+      "touch_band": 7.1689,
+      "risk": 12.2896,
+      "rr1": 27.7064,
       "rr2": 3.0,
       "stand_aside": false,
       "trigger": "1H close above VAH 2,235.50 while still inside value; buy the confirmation, not the poke",
@@ -106,20 +106,20 @@
       "index": 2,
       "name": "VWAP / pivot confluence (long)",
       "side": "LONG",
-      "entry": 1905.7382,
-      "stop": 1893.0751,
-      "t1": 1920.9587,
-      "t2": 1947.9487,
-      "arm_level": 1905.7382,
+      "entry": 1900.4909,
+      "stop": 1888.2013,
+      "t1": 1912.9548,
+      "t2": 1941.4561,
+      "arm_level": 1900.4909,
       "arm_direction": 1,
-      "invalid_level": 1893.0751,
-      "touch_band": 7.3868,
-      "risk": 12.6631,
-      "rr1": 1.2019,
+      "invalid_level": 1888.2013,
+      "touch_band": 7.1689,
+      "risk": 12.2896,
+      "rr1": 1.0142,
       "rr2": 3.3333,
       "stand_aside": true,
-      "trigger": "session VWAP 1,905.74 or pivot support near 1,905.74; buy the hold, not the touch",
-      "invalidation": "5m close below 1,893.08: the confluence level is lost"
+      "trigger": "session VWAP 1,900.49 or pivot support near 1,900.49; buy the hold, not the touch",
+      "invalidation": "5m close below 1,888.20: the confluence level is lost"
     }
   ],
   "warnings": []
