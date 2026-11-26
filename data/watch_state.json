@@ -1,27 +1,27 @@
 {
-  "plan_id": "ETH:2026-11-25",
+  "plan_id": "ETH:2026-11-26",
   "setups": {
     "0": {
-      "armed_at": 1795645500000,
-      "detail": "5m close 1,683.40 above entry 1,682.50",
-      "event_at": 1795645500000,
-      "last_bar_t": 1795645500000,
-      "status": "FIRED"
+      "armed_at": null,
+      "detail": "",
+      "event_at": null,
+      "last_bar_t": 1795722600000,
+      "status": "WAITING"
     },
     "1": {
-      "armed_at": 1795645200000,
-      "detail": "5m close 1,681.60 below entry 1,682.50",
-      "event_at": 1795645200000,
-      "last_bar_t": 1795645200000,
-      "status": "FIRED"
+      "armed_at": null,
+      "detail": "5m close 1,697.30 below the invalidation 1,824.79 - plan dead",
+      "event_at": 1795704900000,
+      "last_bar_t": 1795704900000,
+      "status": "VOID"
     },
     "2": {
-      "armed_at": 1795645200000,
-      "detail": "5m close 1,681.60 below entry 1,687.80",
-      "event_at": 1795645200000,
-      "last_bar_t": 1795645200000,
+      "armed_at": 1795705500000,
+      "detail": "5m close 1,674.50 above entry 1,665.77",
+      "event_at": 1795705500000,
+      "last_bar_t": 1795705500000,
       "status": "FIRED"
     }
   },
-  "updated_at": 1795659367792
+  "updated_at": 1795723124564
 }
